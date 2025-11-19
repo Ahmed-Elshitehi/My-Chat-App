@@ -1,5 +1,6 @@
 package com.My_Chat_App_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -40,6 +41,7 @@ public class User {
 
 
     @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
     List<ChatRoom> chatRooms;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
