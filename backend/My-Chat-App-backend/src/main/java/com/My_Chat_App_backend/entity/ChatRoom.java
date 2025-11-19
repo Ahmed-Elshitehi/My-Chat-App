@@ -46,16 +46,22 @@ public class ChatRoom {
     public void addParticipant(User user) {
         this.participants.add(user);
         user.getChatRooms().add(this);
+        updateIsPrivate();
     }
 
     public void removeParticipant(User user) {
         this.participants.remove(user);
         user.getChatRooms().remove(this);
+        updateIsPrivate();
     }
 
     // Automatically set createdAt before persisting
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    private void updateIsPrivate() {
+        this.isPrivate = this.participants.size() <= 2;
     }
 }
