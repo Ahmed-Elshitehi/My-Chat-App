@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -42,14 +45,10 @@ public class UserController {
 
     @GetMapping("/search/{part}")
     public ResponseEntity<List<User>> searchUsers(@PathVariable String part) {
-        List<User> byUsername = userService.searchUsersByUsername(part);
-        List<User> byEmail = userService.searchUsersByEmail(part);
-        byEmail.forEach(user -> {
-            if (!byUsername.contains(user)) {
-                byUsername.add(user);
-            }
-        });
-        return ResponseEntity.ok(byUsername);
+        Set<User> userSet = new HashSet<>();
+        userSet.addAll(userService.searchUsersByEmail(part));
+        userSet.addAll(userService.searchUsersByUsername(part));
+        return ResponseEntity.ok(new ArrayList<>(userSet));
     }
 
     @PostMapping({"", "/"})
