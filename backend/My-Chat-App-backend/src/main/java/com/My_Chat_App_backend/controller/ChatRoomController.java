@@ -1,6 +1,7 @@
 package com.My_Chat_App_backend.controller;
 
 
+import com.My_Chat_App_backend.dto.MessageDto;
 import com.My_Chat_App_backend.entity.ChatRoom;
 import com.My_Chat_App_backend.entity.Message;
 import com.My_Chat_App_backend.entity.User;
@@ -32,7 +33,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{chatRoomId}/messages")
-    public List<Message> getMessagesInChatRoom(@PathVariable Long chatRoomId) {
+    public List<MessageDto> getMessagesInChatRoom(@PathVariable Long chatRoomId) {
         return chatRoomService.getMessagesInChatRoom(chatRoomId);
     }
 

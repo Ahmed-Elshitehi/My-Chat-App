@@ -1,5 +1,6 @@
 package com.My_Chat_App_backend.service;
 
+import com.My_Chat_App_backend.dto.MessageDto;
 import com.My_Chat_App_backend.entity.ChatRoom;
 import com.My_Chat_App_backend.entity.Message;
 import com.My_Chat_App_backend.entity.User;
@@ -55,9 +56,12 @@ public class ChatRoomService {
         return chatRoom.getParticipants();
     }
 
-    public List<Message> getMessagesInChatRoom(Long chatRoomId) {
+    public List<MessageDto> getMessagesInChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = getChatRoomById(chatRoomId);
-        return chatRoom.getMessages();
+        return chatRoom.getMessages()
+                .stream()
+                .map(messageService::mapToDto)
+                .toList();
     }
 
     public ChatRoom updateChatRoomName(Long chatRoomId, String newName) {
