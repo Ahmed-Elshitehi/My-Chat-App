@@ -45,7 +45,7 @@ public class ChatRoomService {
 
     public ChatRoom addParticipantToChatRoom(Long chatRoomId, Long userId) {
         ChatRoom chatRoom = getChatRoomById(chatRoomId);
-        User user = userService.getUserById(userId);
+        User user = userService.getUserEntityById(userId);
         chatRoom.getParticipants().add(user);
         chatRoomRepository.save(chatRoom);
         return chatRoom;
@@ -72,7 +72,7 @@ public class ChatRoomService {
 
     public ChatRoom removeParticipantFromChatRoom(Long chatRoomId, Long userId) {
         ChatRoom chatRoom = getChatRoomById(chatRoomId);
-        User user = userService.getUserById(userId);
+        User user = userService.getUserEntityById(userId);
         chatRoom.getParticipants().remove(user);
         chatRoomRepository.save(chatRoom);
         return chatRoom;

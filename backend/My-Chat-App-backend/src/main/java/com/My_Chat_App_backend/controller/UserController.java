@@ -1,5 +1,6 @@
 package com.My_Chat_App_backend.controller;
 
+import com.My_Chat_App_backend.dto.UserDto;
 import com.My_Chat_App_backend.entity.User;
 import com.My_Chat_App_backend.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,40 +20,40 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping({"", "/"})
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
     @GetMapping("/search/username/{usernamePart}")
-    public ResponseEntity<List<User>> searchUsersByUsername(@PathVariable String usernamePart) {
+    public ResponseEntity<List<UserDto>> searchUsersByUsername(@PathVariable String usernamePart) {
         return ResponseEntity.ok(userService.searchUsersByUsername(usernamePart));
     }
 
     @GetMapping("/search/email/{emailPart}")
-    public ResponseEntity<List<User>> searchUsersByEmail(@PathVariable String emailPart) {
+    public ResponseEntity<List<UserDto>> searchUsersByEmail(@PathVariable String emailPart) {
         return ResponseEntity.ok(userService.searchUsersByEmail(emailPart));
     }
 
     @GetMapping("/search/{part}")
-    public ResponseEntity<List<User>> searchUsers(@PathVariable String part) {
-        Set<User> userSet = new HashSet<>();
+    public ResponseEntity<List<UserDto>> searchUsers(@PathVariable String part) {
+        Set<UserDto> userSet = new HashSet<>();
         userSet.addAll(userService.searchUsersByEmail(part));
         userSet.addAll(userService.searchUsersByUsername(part));
         return ResponseEntity.ok(new ArrayList<>(userSet));
     }
 
     @PostMapping({"", "/"})
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> createUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
     }
 

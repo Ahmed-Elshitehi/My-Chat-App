@@ -1,5 +1,6 @@
 package com.My_Chat_App_backend.service;
 
+import com.My_Chat_App_backend.dto.UserDto;
 import com.My_Chat_App_backend.entity.User;
 import com.My_Chat_App_backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -18,33 +19,48 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public User saveUser(User user) {
+    public UserDto saveUser(User user) {
         if (userExistsByEmail(user.getEmail())) {
             throw new RuntimeException("User already exists with email: " + user.getEmail());
         }
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return mapToDto(savedUser);
     }
 
-    public User getUserById(Long id) {
+    public UserDto getUserById(Long id) {
+        User user = userRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return mapToDto(user);
+    }
+
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findUserByEmail(email).
+                orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        return mapToDto(user);
+    }
+
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    public List<UserDto> searchUsersByUsername(String usernamePart) {
+        return userRepository.findByUsernameContainingIgnoreCase(usernamePart).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    public List<UserDto> searchUsersByEmail(String emailPart) {
+        return userRepository.findByEmailContainingIgnoreCase(emailPart).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+
+    public User getUserEntityById(Long id) {
         return userRepository.findById(id).
                 orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-    }
-
-    public User getUserByEmail(String email) {
-        return userRepository.findUserByEmail(email).
-                orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public List<User> searchUsersByUsername(String usernamePart) {
-        return userRepository.findByUsernameContainingIgnoreCase(usernamePart);
-    }
-
-    public List<User> searchUsersByEmail(String emailPart) {
-        return userRepository.findByEmailContainingIgnoreCase(emailPart);
     }
 
     public void deleteUserById(Long id) {
@@ -53,4 +69,14 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public UserDto mapToDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
 }
